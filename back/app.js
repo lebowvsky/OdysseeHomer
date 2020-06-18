@@ -6,6 +6,12 @@ const morgan = require('morgan');
 const app = express();
 const authRouter = require('./routes/auth/auth')
 
+app.use(express.json());
+app.use(
+    express.urlencoded({
+        extended: true,
+    })
+);
 
 app.use('/auth', authRouter);
 
