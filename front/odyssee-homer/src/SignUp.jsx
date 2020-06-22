@@ -1,4 +1,21 @@
 import React from "react";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import { purple } from "@material-ui/core/colors";
+import { withStyles } from "@material-ui/core/styles";
+import { Snackbar } from "@material-ui/core";
+
+const ColorButton = withStyles((theme) => ({
+  root: {
+    color: theme.palette.getContrastText(purple[500]),
+    backgroundColor: purple[500],
+    "&:hover": {
+      backgroundColor: purple[700],
+    },
+  },
+}))(Button);
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -10,6 +27,7 @@ class SignUp extends React.Component {
       name: "",
       lastname: "",
       flash: "",
+      isFlash: false,
     };
     this.updateEmailField = this.updateEmailField.bind(this);
     this.updatePasswordField = this.updatePasswordField.bind(this);
@@ -42,6 +60,7 @@ class SignUp extends React.Component {
   handleSubmit(e) {
     const { email, password, name, lastname } = this.state;
     e.preventDefault();
+    this.setState({ isFlash: true });
     fetch("/auth/signup", {
       method: "POST",
       headers: new Headers({
@@ -56,31 +75,75 @@ class SignUp extends React.Component {
       );
   }
 
+  handleClose = () => {
+    this.setState({ isFlash: false });
+  };
+
   render() {
     return (
       <>
-        <h1>{JSON.stringify(this.state)}</h1>
+        {/* <h1>{JSON.stringify(this.state)}</h1> */}
         <form onSubmit={this.handleSubmit}>
-          <input type="email" name="email" onChange={this.updateEmailField} />
-          <input
-            type="password"
-            name="password"
-            onChange={this.updatePasswordField}
-          />
-          <input
-            type="password"
-            name="passwordbis"
-            onChange={this.updatePassWordBisField}
-          />
-          <input type="text" name="name" onChange={this.updateNameField} />
-          <input
-            type="text"
-            name="lastname"
-            onChange={this.updateLastnameField}
-          />
+          <Grid
+            container
+            direction="column"
+            justify="center"
+            alignItems="stretch"
+            style={{ padding: 20 }}
+          >
+            <h2>Sign Up!</h2>
+            <TextField
+              label="Email"
+              type="email"
+              name="email"
+              onChange={this.updateEmailField}
+              required
+            />
 
-          <input type="submit" value="Soumettre" />
+            <TextField
+              label="Password"
+              type="password"
+              name="password"
+              onChange={this.updatePasswordField}
+              required
+            />
+
+            <TextField
+              label="Password copy"
+              type="password"
+              name="passwordbis"
+              onChange={this.updatePassWordBisField}
+              required
+            />
+
+            <TextField
+              label="Name"
+              type="text"
+              name="name"
+              onChange={this.updateNameField}
+              required
+            />
+
+            <TextField
+              label="Lastname"
+              type="text"
+              name="lastname"
+              onChange={this.updateLastnameField}
+              required
+            />
+            <Box mt={5} style={{ alignSelf: "flex-end" }}>
+              <ColorButton type="submit" p={5}>
+                Submit
+              </ColorButton>
+            </Box>
+          </Grid>
         </form>
+        <Snackbar
+          open={this.state.isFlash}
+          autoHideDuration={2000}
+          onClose={this.handleClose}
+          message={this.state.flash}
+        />
       </>
     );
   }
