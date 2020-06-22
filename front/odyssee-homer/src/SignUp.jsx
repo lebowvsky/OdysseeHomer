@@ -9,6 +9,7 @@ class SignUp extends React.Component {
       passwordBis: "",
       name: "",
       lastname: "",
+      flash: "",
     };
     this.updateEmailField = this.updateEmailField.bind(this);
     this.updatePasswordField = this.updatePasswordField.bind(this);
@@ -38,9 +39,21 @@ class SignUp extends React.Component {
     this.setState({ lastname: e.target.value });
   }
 
-  handleSubmit(e){
+  handleSubmit(e) {
+    const { email, password, name, lastname } = this.state;
     e.preventDefault();
-    console.log(this.state);
+    fetch("/auth/signup", {
+      method: "POST",
+      headers: new Headers({
+        "Content-Type": "application/json",
+      }),
+      body: JSON.stringify({ email, password, name, lastname }),
+    })
+      .then((res) => res.json())
+      .then(
+        (res) => this.setState({ flash: res.flash }),
+        (err) => this.setState({ flash: err.flash })
+      );
   }
 
   render() {
@@ -60,7 +73,11 @@ class SignUp extends React.Component {
             onChange={this.updatePassWordBisField}
           />
           <input type="text" name="name" onChange={this.updateNameField} />
-          <input type="text" name="lastname" onChange={this.updateLastnameField} />
+          <input
+            type="text"
+            name="lastname"
+            onChange={this.updateLastnameField}
+          />
 
           <input type="submit" value="Soumettre" />
         </form>
