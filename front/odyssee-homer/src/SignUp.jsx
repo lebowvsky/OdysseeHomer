@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -27,6 +28,7 @@ class SignUp extends React.Component {
       name: "",
       lastname: "",
       flash: "",
+      flashIsOk: false,
       isFlash: false,
     };
     this.updateEmailField = this.updateEmailField.bind(this);
@@ -70,18 +72,20 @@ class SignUp extends React.Component {
     })
       .then((res) => res.json())
       .then(
-        (res) => this.setState({ flash: res.flash }),
+        (res) => this.setState({ flash: res.flash, flashIsOk: true }),
         (err) => this.setState({ flash: err.flash })
       );
   }
 
   handleClose = () => {
     this.setState({ isFlash: false });
+    this.state.flashIsOk && this.props.history.push("/");
   };
 
   render() {
     return (
       <>
+        <Link to="/signin">Sign In</Link>
         {/* <h1>{JSON.stringify(this.state)}</h1> */}
         <form onSubmit={this.handleSubmit}>
           <Grid
